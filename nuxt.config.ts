@@ -136,6 +136,15 @@ export default defineNuxtConfig({
       '/storyblokasset/**': { proxy: 'https://a.storyblok.com/**' },
       '/api/**': { cache: false },
       '/api/cache/**': { cache: false, headers: { 'cache-control': 'no-store' } },
+    },
+    cloudflare: {
+      deployConfig: true,
+      wrangler: {
+        name: 'easai-landing',
+        previews: {
+
+        }
+      }
     }
   },
   app: {
