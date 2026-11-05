@@ -368,7 +368,7 @@ $bp: 900px;
 	initial-value: #FFFFFF;
 	inherits: true;
 }
-@function ctaSweep($base){
+@function ctaSweep($base, $dark: #14141c){
 	@return conic-gradient(from var(--cta-angle),
 		#{$base} 0deg,
 		#{$base} 190deg,
@@ -378,12 +378,13 @@ $bp: 900px;
 		$white 263deg,
 		#3d7bff 271deg,
 		$magenta 279deg,
-		#14141c 292deg,
+		#{$dark} 292deg,
 		#{$base} 330deg,
 		#{$base} 360deg);
 }
 // il fondo (--cta-fill) è disegnato dal ::before insieme al bordo, così l'alone (::after) resta dietro e non sporca l'interno
-@mixin ctaGlow($width: 1.5px){
+// $halo: false lascia libero ::after (es. per la freccia del submit del form)
+@mixin ctaGlow($width: 1.5px, $halo: true){
 	--cta-base: #3c3c4a;
 	--cta-fill: #{$white};
 	position: relative;
@@ -394,7 +395,9 @@ $bp: 900px;
 		0 1px 2px rgba($ink, .06),
 		0 10px 24px -10px rgba($ink, .28),
 		0 24px 48px -24px rgba($ink, .22);
-	&::before, &::after{
+	$layers: '&::before';
+	@if $halo{ $layers: '&::before, &::after'; }
+	#{$layers}{
 		content: '';
 		position: absolute;
 		border-radius: inherit;
@@ -412,15 +415,17 @@ $bp: 900px;
 		box-shadow: inset 0 1px 0 rgba($white, .5);
 	}
 	// alone sfumato: solo il riflesso colorato, dietro al pulsante
-	&::after{
-		z-index: -2;
-		inset: -2px;
-		background: ctaSweep(transparent);
-		filter: blur(10px);
-		opacity: .6;
+	@if $halo{
+		&::after{
+			z-index: -2;
+			inset: -2px;
+			background: ctaSweep(transparent, transparent);
+			filter: blur(10px);
+			opacity: .6;
+		}
 	}
 	@media (prefers-reduced-motion: reduce){
-		&::before, &::after{ animation-duration: 16s; }
+		#{$layers}{ animation-duration: 16s; }
 	}
 }
 
@@ -510,58 +515,284 @@ $bp: 900px;
 	}
 }
 
-// modulo di contatto: campi su fondo soft, card con ombra
-.BodyForm.lead-form .Form{
+// card prezzi (BodyPricing > BodyPriceCard > BodyPriceTier): card normale in vetro, card "featured" in evidenza
+.price-cards{
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr);
+	align-items: center;
+	gap: 2.4rem;
+	font-variant-numeric: tabular-nums;
+	@media (max-width: $bp){
+		grid-template-columns: minmax(0, 1fr);
+		.is-featured{ order: -1; }
+	}
+	// le s barrate (prezzi di listino) restano leggibili ma secondarie
+	s{
+		text-decoration-thickness: 1px;
+		opacity: .55;
+	}
+}
+.price-card{
+	position: relative;
+	display: grid;
+	gap: 2.4rem;
 	padding: 3.2rem;
 	border-radius: 2.8rem;
-	background: $white;
-	box-shadow: 0 30px 80px -30px rgba(60, 10, 90, .35), 0 0 0 1px rgba(11, 11, 15, .05);
+	color: $ink;
+	header{
+		display: grid;
+		gap: 1.2rem;
+	}
+	p{ margin: 0; }
+	.pc-name{
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1.2rem;
+		font-size: 2rem;
+		font-weight: 600;
+		em{
+			font-style: normal;
+			font-size: 1.2rem;
+			font-weight: 600;
+			letter-spacing: .06em;
+			text-transform: uppercase;
+			padding: .45em .9em;
+			border-radius: 99rem;
+		}
+	}
+	.pc-price{
+		display: flex;
+		align-items: flex-end;
+		flex-wrap: wrap;
+		gap: .2rem 1.2rem;
+		strong{
+			font-size: 6.4rem;
+			font-weight: 700;
+			line-height: .9;
+			letter-spacing: -.03em;
+		}
+		s{
+			font-size: 2.6rem;
+			font-weight: 500;
+			line-height: 1;
+			padding-bottom: .4rem;
+		}
+		span{
+			font-size: 1.45rem;
+			line-height: 1.3;
+			color: $muted;
+		}
+	}
+	.pc-setup{
+		font-size: 1.5rem;
+		color: $muted;
+		b{ color: $ink; }
+	}
+	.pc-label{
+		font-size: 1.2rem;
+		font-weight: 600;
+		letter-spacing: .08em;
+		text-transform: uppercase;
+		color: $muted;
+	}
+	ul{
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 1.2rem;
+		font-size: 1.55rem;
+	}
+	.pc-tiers li{
+		display: flex;
+		justify-content: space-between;
+		align-items: baseline;
+		gap: 1.6rem;
+		padding-bottom: 1.2rem;
+		border-bottom: 1px solid $line;
+		&:last-child{ border-bottom: 0; padding-bottom: 0; }
+		b{ white-space: nowrap; }
+		s{ margin-right: .6em; font-weight: 400; }
+	}
+	.pc-list li{
+		position: relative;
+		padding-left: 2.6rem;
+		// spunta
+		&::before{
+			content: '';
+			position: absolute;
+			left: .2rem;
+			top: .35em;
+			width: 1.2rem;
+			height: .65rem;
+			border-left: 2px solid currentColor;
+			border-bottom: 2px solid currentColor;
+			transform: rotate(-45deg);
+		}
+	}
+	.pc-section{
+		display: grid;
+		gap: 1.4rem;
+		padding-top: 2.4rem;
+		border-top: 1px solid $line;
+	}
+	@media (max-width: 640px){
+		padding: 2.4rem;
+		border-radius: 2.2rem;
+		.pc-price strong{ font-size: 5.2rem; }
+	}
+
+	// listino: vetro smerigliato sulla fascia colorata, volutamente in secondo piano
+	&.is-list{
+		color: $white;
+		background: rgba($white, .1);
+		border: 1px solid rgba($white, .28);
+		backdrop-filter: blur(16px);
+		-webkit-backdrop-filter: blur(16px);
+		.pc-name em{ background: rgba($white, .16); }
+		.pc-price span, .pc-setup, .pc-label{ color: rgba($white, .78); }
+		.pc-setup b{ color: $white; }
+		.pc-tiers li, .pc-section{ border-color: rgba($white, .22); }
+	}
+
+	// early access: card bianca con alone colorato in alto e bordo iridescente animato
+	&.is-featured{
+		@include ctaGlow(2px);
+		--cta-base: #{rgba($white, .9)};
+		padding-block: 4rem;
+		box-shadow:
+			0 2px 4px rgba(30, 0, 50, .08),
+			0 40px 90px -30px rgba(30, 0, 50, .65);
+		> *{ position: relative; z-index: 1; }
+		.pc-glow{
+			position: absolute;
+			inset: 0;
+			z-index: 0;
+			border-radius: inherit;
+			overflow: hidden;
+			pointer-events: none;
+			&::before{
+				content: '';
+				position: absolute;
+				left: -10%;
+				right: -10%;
+				top: -30%;
+				height: 70%;
+				filter: blur(40px);
+				opacity: .75;
+				background:
+					radial-gradient(35% 60% at 20% 55%, rgba($violet, .55), transparent 70%),
+					radial-gradient(35% 55% at 50% 45%, rgba($magenta, .45), transparent 70%),
+					radial-gradient(40% 60% at 82% 55%, rgba($amber, .8), transparent 70%);
+				@media (prefers-reduced-motion: no-preference){
+					animation: price-glow 9s ease-in-out infinite alternate;
+				}
+			}
+		}
+		.pc-name{
+			span{
+				background: linear-gradient(90deg, $violet, $magenta 55%, $orange);
+				-webkit-background-clip: text;
+				background-clip: text;
+				color: transparent;
+			}
+			em{
+				color: $white;
+				background: $ink;
+			}
+		}
+		.pc-price{
+			strong{ font-size: 8rem; }
+			.pc-off{
+				align-self: center;
+				font-style: normal;
+				font-size: 1.3rem;
+				font-weight: 700;
+				color: $white;
+				background: linear-gradient(120deg, $violet, $magenta);
+				padding: .3em .7em;
+				border-radius: 99rem;
+			}
+		}
+		.pc-list li::before{ color: $magenta; }
+		@media (max-width: 640px){
+			padding-block: 3.2rem;
+			.pc-price strong{ font-size: 6.4rem; }
+		}
+	}
+}
+@keyframes price-glow{
+	to{ transform: translateX(6%) scale(1.08); }
+}
+// CTA dentro la card: BodyCTA "pill solid" a tutta larghezza
+.price-card .pc-cta{
+	display: grid;
+	.BodyCTA.pill{
+		justify-content: center;
+		padding: 1.1em 1.4em;
+		font-size: 1.4rem;
+	}
+}
+.price-foot{
+	margin-top: 2.4rem;
+	text-align: center;
+	font-size: 1.35rem;
+	color: rgba($white, .85);
+}
+
+// modulo di contatto: card bianca con bordo iridescente animato, campi morbidi, submit come le CTA
+$chevron: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 6l4 4 4-4' fill='none' stroke='%235E5D66' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E";
+.BodyForm.lead-form .Form{
+	@include ctaGlow(1.5px);
+	--cta-base: #{$line};
+	padding: 4rem;
+	border-radius: 2.8rem;
+	box-shadow:
+		0 2px 4px rgba(60, 10, 90, .05),
+		0 40px 90px -40px rgba(60, 10, 90, .45);
 	--form-line: transparent;
 	--form-muted: #{$muted};
 	form{
-		gap: 1.6rem;
+		gap: 2.2rem;
 		input[type="text"], input[type="email"], input[type="tel"], select, textarea{
-			padding: .7em .9em;
-			border: 1px solid transparent;
+			padding: 1.1rem 1.4rem;
+			border: 1px solid $line;
 			border-radius: 1.2rem;
 			background: $soft;
 			font-size: 1.6rem;
 			font-weight: 400;
+			line-height: 1.4;
+			transition: border-color $dt*.5 $de, background-color $dt*.5 $de, box-shadow $dt*.5 $de;
+			&:hover{ border-color: color-mix(in srgb, $muted 35%, $line); }
 			&:focus{
 				border-color: $violet;
 				background: $white;
+				box-shadow: 0 0 0 4px rgba($violet, .12);
 			}
 		}
-		textarea{ min-height: 9.6rem; }
+		.fieldText, .fieldEmail{
+			&:has(input:not(:placeholder-shown)) input:not(:focus){
+				border-color: $line;
+				background: $white;
+			}
+		}
+		select{
+			padding-right: 4rem;
+			cursor: pointer;
+			background-image: url($chevron);
+			background-repeat: no-repeat;
+			background-position: right 1.4rem center;
+			background-size: 1.6rem;
+			&.compiled{ background-color: $white; }
+		}
+		textarea{
+			min-height: 11rem;
+			&::placeholder{ color: color-mix(in srgb, $muted 70%, transparent) !important; }
+		}
 		.fieldFlexGroup{
-			gap: 1.6rem;
+			gap: 2.2rem 1.6rem;
 			> *{ flex: 1 1 18rem; min-width: 0; }
-		}
-		.fieldRadioGroup{
-			display: flex;
-			flex-wrap: wrap;
-			gap: 1rem 2.4rem;
-			font-size: 1.5rem;
-		}
-		.submit.BodyCTA:not(.noStyles):not(.pill){
-			display: inline-flex;
-			flex-direction: row;
-			align-items: center;
-			min-height: 0;
-			gap: 1.2rem;
-			width: auto;
-			align-self: flex-start;
-			margin-top: 0;
-			padding: .85em 1.4em;
-			border: 1px solid transparent;
-			border-radius: 99rem;
-			background: $ink;
-			color: $white !important;
-			font-size: 1.3rem;
-			font-weight: 600;
-			letter-spacing: .06em;
-			&::after{ transform: none; }
-			&:hover{ background: $violet; }
 		}
 		.fieldText, .fieldEmail{
 			> label{
@@ -570,7 +801,7 @@ $bp: 900px;
 			}
 		}
 		.fieldText, .fieldEmail, .fieldTextArea, .fieldSelect{
-			gap: .6rem;
+			gap: .8rem;
 			> label{
 				font-size: 1.2rem;
 				font-weight: 600;
@@ -578,8 +809,116 @@ $bp: 900px;
 				color: $muted !important;
 			}
 		}
+		// radio a pillola: l'input resta sopra la label (invisibile) così tastiera e click funzionano
+		.fieldRadioGroup{
+			display: flex;
+			flex-wrap: wrap;
+			gap: .8rem;
+			margin-top: -.6rem;
+			.inputOption{
+				position: relative;
+				display: flex;
+			}
+			input[type="radio"]{
+				position: absolute;
+				inset: 0;
+				margin: 0;
+				opacity: 0;
+				cursor: pointer;
+			}
+			label{
+				padding: .75em 1.2em;
+				border: 1px solid $line;
+				border-radius: 99rem;
+				background: $white;
+				font-size: 1.45rem;
+				line-height: 1;
+				transition: background-color $dt*.5 $de, border-color $dt*.5 $de, color $dt*.5 $de;
+			}
+			.inputOption:hover label{ border-color: color-mix(in srgb, $muted 45%, $line); }
+			input:checked + label{
+				background: $ink;
+				border-color: $ink;
+				color: $white !important;
+			}
+			input:focus-visible + label{
+				box-shadow: 0 0 0 4px rgba($violet, .2);
+			}
+		}
+		.fieldCheckbox .inputContent{
+			gap: 1.2rem;
+			.fakeCheck{ display: none; }
+			font-size: 1.35rem;
+			line-height: 1.45;
+			color: $muted !important;
+			input[type="checkbox"]{
+				width: 2rem;
+				height: 2rem;
+				margin-top: 0;
+				border: 1.5px solid color-mix(in srgb, $muted 45%, $line);
+				border-radius: .6rem;
+				background: $white;
+				transition: background-color $dt*.5 $de, border-color $dt*.5 $de;
+				// spunta bianca
+				&::after{
+					width: .9rem;
+					height: .5rem;
+					top: 45%;
+					border-radius: 0;
+					background: transparent;
+					border-left: 2px solid $white;
+					border-bottom: 2px solid $white;
+					transform: translate(-50%, -50%) rotate(-45deg) scale(0);
+					transition: transform .2s ease-in-out;
+				}
+				&:checked{
+					background: $ink;
+					border-color: $ink;
+					&::after{
+						background: transparent;
+						transform: translate(-50%, -50%) rotate(-45deg) scale(1);
+					}
+				}
+				&:focus-visible{ box-shadow: 0 0 0 4px rgba($violet, .2); }
+			}
+		}
+		// submit: pillola nera con bordo animato, come le CTA "pill solid"
+		.submit.BodyCTA:not(.noStyles):not(.pill){
+			@include ctaGlow(1.5px, false);
+			--cta-fill: #{$ink};
+			display: inline-flex;
+			flex-direction: row;
+			align-items: center;
+			justify-content: center;
+			min-height: 0;
+			gap: 1.2rem;
+			width: auto;
+			align-self: flex-start;
+			margin-top: .4rem;
+			padding: 1.1em 1.8em;
+			border: 1px solid transparent;
+			border-radius: 99rem;
+			color: $white !important;
+			font-size: 1.4rem;
+			font-weight: 600;
+			letter-spacing: .06em;
+			&::after{ transform: none; }
+			&:hover{
+				--cta-fill: #{$violet};
+				transform: translateY(-1px);
+				&::before{ animation-duration: 2s; }
+			}
+			white-space: nowrap;
+			@media (max-width: 640px){
+				align-self: stretch;
+				padding-inline: 1.2em;
+				font-size: 1.3rem;
+				letter-spacing: .04em;
+			}
+		}
 	}
 	@media (max-width: 640px){
-		padding: 2.2rem;
+		padding: 2.4rem;
+		border-radius: 2.2rem;
 	}
 }
