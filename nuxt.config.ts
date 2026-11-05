@@ -59,7 +59,7 @@ export default defineNuxtConfig({
     ],
   },
   modules: [
-    "@storyblok/nuxt",
+    "@storyblok/nuxt", 
     "@nuxt/image",
     "@nuxt/icon",
     "@nuxt/fonts",
