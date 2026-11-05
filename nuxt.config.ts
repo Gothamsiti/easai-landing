@@ -150,6 +150,7 @@ export default defineNuxtConfig({
             traces : {
               enabled : true
             }
+          }
         }
       }
     }
