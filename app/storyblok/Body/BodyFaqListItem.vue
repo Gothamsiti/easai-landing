@@ -30,7 +30,7 @@ details.BodyFaqListItem
             font-weight: 400;
             font-size: 2.4rem;
             line-height: 1;
-            color: $magenta;
+            color: $teal;
         }
     }
     &[open] summary::after{

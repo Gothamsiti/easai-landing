@@ -45,7 +45,7 @@ header#mainHeader{
         .BodyCTA{
             color: $ink;
             &:hover{
-                color: $violet;
+                color: $petrol;
             }
         }
     }

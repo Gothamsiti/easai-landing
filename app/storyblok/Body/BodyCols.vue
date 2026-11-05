@@ -145,6 +145,8 @@
         }
         >*{
             box-sizing: border-box;
+            // gli elementi tengono la loro larghezza e il contenitore scorre, invece di schiacciarli
+            flex-shrink: 0;
             *{
                 max-width:100%;
             }
@@ -178,14 +180,16 @@
                 height: 2rem;
             }
         }
-        // frecce in alto a destra, appoggiate sopra il bordo superiore del contenitore
+        // frecce sotto le immagini, allineate a destra: stanno nel flusso dopo il contenitore,
+        // quindi top/left inline calcolati da useHorizontalScrollbar non hanno effetto
         &__arrows{
-            position: absolute;
+            position: relative;
+            top: auto !important;
+            left: auto !important;
             display: flex;
             justify-content: flex-end;
             gap: mw(.5);
-            padding-bottom: mw(1);
-            transform: translate(mw(-2), -100%);
+            padding-top: mw(1.5);
             pointer-events: none;
             z-index: 3;
             @include media(550){

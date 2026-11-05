@@ -53,7 +53,7 @@
 		overflow: hidden;
 		border-radius: 2.2rem;
 		background: $white;
-		box-shadow: 0 30px 80px -30px rgba(60, 10, 90, .45), 0 0 0 1px rgba(11, 11, 15, .05);
+		box-shadow: 0 30px 80px -30px rgba(17, 34, 39, .45), 0 0 0 1px rgba(11, 11, 15, .05);
 	}
 	.head{
 		display: flex;
@@ -71,7 +71,7 @@
 		aspect-ratio: 1448 / 1086;
 		overflow: hidden;
 		background-color: $white;
-		background-image: linear-gradient(rgba($violet,.07) 1px, transparent 1px), linear-gradient(90deg, rgba($violet,.07) 1px, transparent 1px);
+		background-image: linear-gradient(rgba($petrol,.07) 1px, transparent 1px), linear-gradient(90deg, rgba($petrol,.07) 1px, transparent 1px);
 		background-size: 4.1436% 5.5249%;
 	}
 	.layer{
@@ -103,7 +103,7 @@
 		font-size: 1.1rem;
 		letter-spacing: .06em;
 		text-transform: uppercase;
-		color: #6B6A73;
+		color: #626C70;
 	}
 	.line{
 		position: absolute;
@@ -151,7 +151,7 @@
 		input{
 			flex: 1;
 			min-width: 0;
-			accent-color: $magenta;
+			accent-color: $teal;
 		}
 	}
 }
