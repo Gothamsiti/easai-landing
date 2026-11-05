@@ -142,15 +142,6 @@ export default defineNuxtConfig({
       wrangler: {
         name: 'easai-landing',
         previews: {
-          observability: {
-            logs: {
-              enabled: false,
-              invocation_logs: true
-            },
-            traces : {
-              enabled : true
-            }
-          }
         }
       }
     }
