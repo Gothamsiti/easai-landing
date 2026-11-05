@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dal CAD al catalogo</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: pagina bianca e ariosa, titoli grandi con parole in corsivo serif, aloni sfumati arancio-rosa-viola dietro gli oggetti chiave, offerta su fascia a colore pieno. Stile volutamente solo chiaro. */
+:root {
+  color-scheme: light;
+  --bg: #FFFFFF;
+  --ink: #0B0B0F;
+  --muted: #5E5D66;
+  --line: #E6E4EA;
+  --soft: #F6F4F8;
+  --violet: #7A2BD6;
+  --magenta: #E0347E;
+  --orange: #FF8A3D;
+  --amber: #FFC247;
+  --wire: #6A2FC9;
+  --grid: rgba(122, 43, 214, .07);
+  --f-sans: "Inter", "Helvetica Neue", Arial, sans-serif;
+  --f-serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --f-mono: "JetBrains Mono", ui-monospace, Menlo, monospace;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--f-sans); font-size: 17px; line-height: 1.6;
+  -webkit-font-smoothing: antialiased; overflow-x: hidden;
+}
+.wrap {
+  max-width: 1140px; margin: 0 auto;
+  padding-left: max(20px, env(safe-area-inset-left, 0px));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+}
+h1, h2, h3 { margin: 0; font-weight: 700; letter-spacing: -0.025em; text-wrap: balance; }
+h1 { font-size: clamp(2.6rem, 6.4vw, 4.8rem); line-height: 1.02; }
+h2 { font-size: clamp(2.1rem, 4.8vw, 3.6rem); line-height: 1.04; }
+h3 { font-size: 1.08rem; letter-spacing: -0.01em; }
+h1 em, h2 em, .serif { font-family: var(--f-serif); font-style: italic; font-weight: 400; letter-spacing: -0.01em; }
+p { margin: 0; }
+a { color: inherit; }
+.muted { color: var(--muted); }
+.kicker { font-family: var(--f-serif); font-style: italic; font-size: 1.35rem; color: var(--ink); }
+:focus-visible { outline: 2px solid var(--violet); outline-offset: 3px; }
+
+/* pulsanti a pillola */
+.pill {
+  display: inline-flex; align-items: center; gap: .6em;
+  font-family: var(--f-sans); font-size: .8rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--ink); background: transparent; text-decoration: none; cursor: pointer;
+  border: 1px solid var(--ink); border-radius: 999px; padding: .85em 1.4em;
+  transition: background .2s, color .2s;
+}
+.pill svg { width: 14px; height: 14px; flex: none; }
+.pill:hover { background: var(--ink); color: var(--bg); }
+.pill.solid { background: var(--ink); color: var(--bg); }
+.pill.solid:hover { background: var(--violet); border-color: var(--violet); }
+
+/* nav */
+.nav .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 22px; }
+.brand { font-weight: 700; font-size: 1rem; letter-spacing: -0.01em; }
+.nav-links { display: flex; gap: 28px; font-size: .92rem; }
+.nav-links a { text-decoration: none; color: var(--ink); }
+.nav-links a:hover { color: var(--violet); }
+
+/* hero */
+.hero { position: relative; overflow: hidden; }
+.hero-copy { text-align: center; display: grid; justify-items: center; gap: 20px; padding-block: 56px 24px; }
+.hero-copy .lead { max-width: 38em; color: var(--muted); font-size: 1.08rem; }
+.badge {
+  display: inline-flex; gap: .5em; align-items: center; font-size: .8rem; font-weight: 600;
+  padding: .45em 1em; border-radius: 999px; background: var(--soft); color: var(--ink);
+}
+.badge i { width: 8px; height: 8px; border-radius: 50%; background: linear-gradient(135deg, var(--orange), var(--magenta)); display: block; }
+.cta-row { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; }
+
+.stage { position: relative; padding-block: 40px 72px; overflow: hidden; }
+.glow {
+  position: absolute; left: 50%; top: 50%; width: min(1400px, 140vw); height: 70%;
+  transform: translate(-50%, -50%); pointer-events: none; filter: blur(48px); opacity: .85;
+  background:
+    radial-gradient(40% 55% at 22% 50%, rgba(255, 194, 71, .85), transparent 70%),
+    radial-gradient(38% 60% at 45% 55%, rgba(255, 138, 61, .75), transparent 70%),
+    radial-gradient(40% 55% at 62% 52%, rgba(224, 52, 126, .7), transparent 70%),
+    radial-gradient(35% 50% at 82% 48%, rgba(122, 43, 214, .55), transparent 70%);
+}
+.viewer { position: relative; max-width: 680px; margin: 0 auto; display: grid; gap: 14px; }
+.viewer-frame { background: var(--bg); border-radius: 22px; overflow: hidden; box-shadow: 0 30px 80px -30px rgba(60, 10, 90, .45), 0 0 0 1px rgba(11, 11, 15, .05); }
+.viewer-head { display: flex; justify-content: space-between; gap: 8px; padding: 12px 18px; border-bottom: 1px solid var(--line); font-family: var(--f-mono); font-size: .72rem; color: var(--muted); letter-spacing: .04em; }
+.viewer svg { display: block; width: 100%; height: auto; max-width: 100%; }
+.viewer-ctrl { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: rgba(255,255,255,.75); border-radius: 999px; font-size: .78rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; }
+.viewer-ctrl input { flex: 1; min-width: 0; accent-color: var(--magenta); }
+.wire { stroke: var(--wire); fill: none; stroke-width: 1.4; }
+.wire-hidden { stroke: var(--wire); fill: none; stroke-width: 1; stroke-dasharray: 5 4; opacity: .5; }
+.dim { stroke: var(--muted); stroke-width: 1; fill: none; }
+.dim-fill { fill: var(--muted); }
+.dim-text { fill: var(--muted); font-family: var(--f-mono); font-size: 13px; }
+.grid-line { stroke: var(--grid); stroke-width: 1; }
+.view-area { position: relative; aspect-ratio: 1448 / 1086; max-width: 100%; overflow: hidden; }
+.view-area { background-color: #FFFFFF; background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 4.1436% 5.5249%; }
+.view-area .layer { position: absolute; inset: 0; width: 100%; height: 100%; }
+.view-area img { display: block; width: 100%; height: 100%; object-fit: cover; user-select: none; -webkit-user-drag: none; pointer-events: none; }
+.photo-layer { clip-path: inset(0 0 0 50%); background: #E4E4E4; }
+.photo-tag { position: absolute; right: 16px; bottom: 12px; font-family: var(--f-mono); font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; color: #6B6A73; }
+.split-ui { position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; margin-left: -1px; background: var(--ink); pointer-events: none; }
+.knob {
+  position: absolute; top: 50%; left: 50%; width: 48px; height: 48px; margin: -24px 0 0 -24px; padding: 0;
+  display: grid; place-items: center; border: 0; border-radius: 50%; background: var(--ink); color: #FFFFFF;
+  cursor: grab; touch-action: none; box-shadow: 0 6px 20px -6px rgba(0,0,0,.45), 0 0 0 4px rgba(255,255,255,.7);
+  transition: transform .15s;
+}
+.knob svg { width: 22px; height: 22px; }
+.knob:hover { transform: scale(1.08); }
+.knob.dragging { cursor: grabbing; transform: scale(1.12); }
+.tag-text { font-family: var(--f-mono); font-size: 12px; letter-spacing: .06em; fill: #6B6A73; }
+
+.scarcity { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 36px; padding-top: 28px; position: relative; }
+.scarcity > div { display: flex; align-items: center; gap: 12px; font-size: .95rem; }
+.slot-bar { display: flex; gap: 4px; }
+.slot-bar i { width: 10px; height: 10px; border-radius: 50%; background: var(--ink); display: block; }
+.slot-bar i.taken { background: transparent; box-shadow: inset 0 0 0 1.5px var(--line); }
+.num { font-weight: 700; font-variant-numeric: tabular-nums; }
+
+/* sezioni */
+.section > .wrap { padding-block: 96px; display: grid; gap: 56px; }
+.split { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 48px; align-items: end; }
+.split p { font-size: 1.15rem; line-height: 1.5; color: var(--ink); max-width: 24em; }
+.cols { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 40px; }
+.cols > div { display: grid; gap: 10px; align-content: start; }
+.cols p, .steps p, .deliver p { color: var(--muted); font-size: .96rem; }
+.fade-band { position: relative; }
+.fade-band::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 160px; pointer-events: none;
+  background: linear-gradient(90deg, rgba(122,43,214,.18), rgba(224,52,126,.18), rgba(255,194,71,.22));
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000); mask-image: linear-gradient(to bottom, transparent, #000);
+}
+
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 32px; counter-reset: s; }
+.steps li { display: grid; gap: 10px; align-content: start; counter-increment: s; }
+.steps li::before {
+  content: counter(s); font-family: var(--f-serif); font-style: italic; font-size: 2.6rem; line-height: 1;
+  background: linear-gradient(120deg, var(--violet), var(--magenta) 55%, var(--orange));
+  -webkit-background-clip: text; background-clip: text; color: transparent; padding-bottom: 6px;
+}
+.formats { font-family: var(--f-mono); font-size: .74rem; color: var(--ink); }
+
+.deliver { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.deliver > div { background: var(--soft); border-radius: 20px; padding: 26px 28px; display: grid; gap: 8px; }
+.deliver .kicker { font-size: 1.15rem; color: var(--violet); }
+
+/* offerta su fascia a colore */
+.offer { background: linear-gradient(105deg, #4C1786 0%, #A21F86 32%, #D42F78 58%, #E9562F 85%, #F07A2A 100%); color: #FFFFFF; }
+.offer .split p { color: rgba(255,255,255,.9); }
+.offer .kicker { color: #FFFFFF; }
+.offer-card { background: #FFFFFF; color: var(--ink); border-radius: 28px; padding: 12px 28px 8px; box-shadow: 0 40px 90px -40px rgba(30, 0, 50, .6); overflow-x: auto; }
+.offer-card table { width: 100%; min-width: 520px; border-collapse: collapse; color: inherit; font-size: inherit; font-variant-numeric: tabular-nums; }
+.offer-card th, .offer-card td { text-align: left; padding: 18px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+.offer-card thead th { font-size: .74rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.offer-card td.item strong { display: block; font-size: 1.05rem; }
+.offer-card td.item span { color: var(--muted); font-size: .9rem; }
+.offer-card .old { color: var(--muted); text-decoration: line-through; white-space: nowrap; }
+.offer-card .new { font-weight: 700; font-size: 1.15rem; white-space: nowrap; }
+.offer-card .new em { font-style: normal; font-size: .72rem; font-weight: 600; color: #FFFFFF; background: linear-gradient(120deg, var(--violet), var(--magenta)); padding: .2em .6em; border-radius: 999px; margin-left: .5em; vertical-align: 2px; }
+.offer-card tfoot td { border-bottom: 0; font-size: .82rem; color: var(--muted); padding-block: 16px 12px; }
+.conds { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 32px; }
+.conds > div { display: grid; gap: 6px; align-content: start; }
+.conds h3 { color: #FFFFFF; }
+.conds p { color: rgba(255,255,255,.88); font-size: .96rem; }
+.offer .pill { color: #FFFFFF; border-color: #FFFFFF; }
+.offer .pill:hover { background: #FFFFFF; color: var(--ink); }
+.offer .pill.solid { background: #FFFFFF; color: var(--ink); }
+.offer .pill.solid:hover { background: var(--ink); color: #FFFFFF; border-color: var(--ink); }
+.offer .cta-row { justify-content: flex-start; }
+
+.faq { max-width: 52em; display: grid; }
+.faq details { border-bottom: 1px solid var(--line); }
+.faq summary { cursor: pointer; padding: 22px 0; font-weight: 600; font-size: 1.08rem; list-style: none; display: flex; justify-content: space-between; gap: 16px; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary::after { content: "+"; font-weight: 400; font-size: 1.4rem; line-height: 1; color: var(--magenta); }
+.faq details[open] summary::after { content: "−"; }
+.faq details p { color: var(--muted); padding-bottom: 22px; max-width: 44em; }
+
+/* modulo */
+.form-sec { position: relative; overflow: hidden; }
+.form-sec .glow { top: 60%; height: 60%; opacity: .5; }
+.form-grid { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr); gap: 56px; align-items: start; }
+.form-intro { display: grid; gap: 18px; }
+.form-intro p { color: var(--muted); font-size: 1.05rem; }
+.contacts { display: grid; gap: 12px; padding-top: 8px; }
+.contacts div { display: grid; gap: 0; }
+.contacts .k { font-size: .74rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.contacts .v { font-size: 1.05rem; user-select: all; }
+form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; background: var(--bg); border-radius: 28px; padding: 32px; box-shadow: 0 30px 80px -30px rgba(60, 10, 90, .35), 0 0 0 1px rgba(11, 11, 15, .05); }
+.field { display: grid; gap: 6px; min-width: 0; }
+.field.full { grid-column: 1 / -1; }
+.field > label, fieldset legend { font-size: .76rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+input[type="text"], input[type="email"], input[type="tel"], select, textarea {
+  font: inherit; font-size: 1rem; color: var(--ink); background: var(--soft);
+  border: 1px solid transparent; border-radius: 12px; padding: .7em .9em; width: 100%;
+}
+input:focus, select:focus, textarea:focus { border-color: var(--violet); outline: none; background: var(--bg); }
+textarea { min-height: 96px; resize: vertical; }
+fieldset { border: 0; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px 20px; }
+fieldset legend { margin-bottom: 8px; padding: 0; width: 100%; }
+.check { display: flex; gap: 10px; align-items: start; font-size: .92rem; color: var(--muted); }
+.check input { accent-color: var(--violet); margin-top: .3em; }
+.form-note { grid-column: 1 / -1; font-size: .92rem; padding: 12px 16px; border-radius: 12px; background: var(--soft); }
+
+footer .wrap { border-top: 1px solid var(--line); padding-block: 28px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; color: var(--muted); font-size: .85rem; }
+
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .split, .form-grid { grid-template-columns: minmax(0, 1fr); gap: 24px; align-items: start; }
+  .steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .cols, .conds { grid-template-columns: minmax(0, 1fr); gap: 24px; }
+}
+@media (max-width: 640px) {
+  body { font-size: 16px; }
+  .section > .wrap { padding-block: 64px; gap: 36px; }
+  .hero-copy { padding-block: 32px 8px; }
+  .steps, .deliver { grid-template-columns: minmax(0, 1fr); }
+  form { grid-template-columns: minmax(0, 1fr); padding: 22px; }
+  .offer-card { padding: 4px 16px; border-radius: 22px; }
+  .nav .pill span { display: none; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .glow { animation: drift 14s ease-in-out infinite alternate; }
+  @keyframes drift { to { transform: translate(-48%, -52%) scale(1.04); } }
+}
+</style>
+</head>
+<body>
+
+
+<header class="nav">
+  <div class="wrap">
+    <div class="brand">[Nome agenzia]</div>
+    <nav class="nav-links" aria-label="Sezioni">
+      <a href="#come">Come funziona</a>
+      <a href="#cosa">Cosa ricevi</a>
+      <a href="#offerta">Prezzi</a>
+      <a href="#domande">Domande</a>
+    </nav>
+    <a class="pill" href="#prenota"><span>Prenota un posto</span><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></a>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap hero-copy">
+      <span class="badge"><i></i>Early access · 10 posti · fino al 31 dicembre 2026</span>
+      <p class="kicker">Il tuo catalogo, senza pensieri.</p>
+      <h1>Dal file CAD<br>all'immagine <em>da catalogo</em></h1>
+      <p class="lead">Ci mandi il file del pezzo, oppure qualche foto fatta col cellulare. Ti restituiamo immagini pulite per catalogo, sito ed e-commerce, pronte da usare. Non serve un grafico in azienda, non serve un fotografo, non serve aspettare che il pezzo sia prodotto.</p>
+      <div class="cta-row">
+        <a class="pill solid" href="#prenota">Prenota uno dei 10 posti <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></a>
+        <a class="pill" href="#offerta">Vedi i prezzi</a>
+      </div>
+    </div>
+
+    <div class="stage">
+      <div class="glow" aria-hidden="true"></div>
+      <div class="wrap">
+        <div class="viewer">
+          <div class="viewer-frame">
+            <div class="viewer-head"><span>flangia_DN80.step</span><span>Vista iso · 1:2</span></div>
+            <div class="view-area" id="viewArea">
+              <svg class="layer cad-layer" viewBox="0 0 1448 1086" role="img" aria-label="Flangia DN80 come modello CAD a fil di ferro">
+<defs>
+  <mask id="hubMask" maskUnits="userSpaceOnUse" x="0" y="0" width="1448" height="1086">
+    <rect width="1448" height="1086" fill="#fff"/>
+    <path d="M405 317 A327 135 0 0 1 1062 317 L1090 505 L380 505 Z" fill="#000"/>
+  </mask>
+  <mask id="hubOnly" maskUnits="userSpaceOnUse" x="0" y="0" width="1448" height="1086">
+    <path d="M405 317 A327 135 0 0 1 1062 317 L1090 505 L380 505 Z" fill="#fff"/>
+  </mask>
+</defs>
+<g fill="none" stroke="#6A2FC9" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <g class="hid" stroke-dasharray="14 10" opacity=".32" stroke-width="2.4">
+    <ellipse cx="729" cy="583" rx="581" ry="232" mask="url(#hubOnly)"/>
+    <path d="M148 688 A581 232 0 0 1 1310 688"/>
+    <path d="M335 515 A390 175 0 0 1 1115 515" mask="url(#hubOnly)"/>
+    <path d="M455 316 V560 M1012 316 V560"/>
+  </g>
+  <ellipse cx="729" cy="583" rx="581" ry="232" mask="url(#hubMask)"/>
+  <path d="M148 583 V688 A581 232 0 0 0 1310 688 V583"/>
+  <path d="M335 515 A390 175 0 0 0 1115 515"/>
+  <path d="M405 317 L384 485 Q380 515 345 528 M1062 317 L1086 482 Q1092 510 1118 520"/>
+  <ellipse cx="735" cy="317" rx="327" ry="135"/>
+  <ellipse cx="733" cy="316" rx="279" ry="104"/>
+  <ellipse cx="355" cy="416" rx="40" ry="24"/>
+  <ellipse cx="250" cy="568" rx="42" ry="25"/>
+  <ellipse cx="412" cy="720" rx="42" ry="25"/>
+  <ellipse cx="782" cy="768" rx="42" ry="25"/>
+  <ellipse cx="1110" cy="680" rx="42" ry="25"/>
+  <ellipse cx="1172" cy="517" rx="42" ry="25"/>
+</g>
+              </svg>
+              <div class="layer photo-layer" id="photoLayer">
+                <img src="flangia-packshot.jpg" alt="La stessa flangia fotografata come still life da catalogo" width="1448" height="1086">
+                <span class="photo-tag">Still life · fondo neutro</span>
+              </div>
+              <div class="split-ui" id="splitUI" aria-hidden="true"></div>
+              <button class="knob" id="knob" type="button" aria-label="Trascina per confrontare file CAD e immagine finale"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 7l-5 5 5 5zM15 7l5 5-5 5z" fill="currentColor"/></svg></button>
+            </div>
+          </div>
+          <div class="viewer-ctrl">
+            <span>CAD</span>
+            <input id="split" type="range" min="0" max="100" value="50" aria-label="Sposta il confronto tra file CAD e immagine finale">
+            <span>Immagine</span>
+          </div>
+        </div>
+        <div class="scarcity" aria-label="Disponibilità dell'offerta">
+          <div><div class="slot-bar" id="slotBar" aria-hidden="true"></div><span><span class="num" id="slotNum">10</span> posti liberi su 10</span></div>
+          <div><span><span class="num" id="daysLeft">56</span> <span id="daysLabel">giorni al 31 dicembre</span></span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section fade-band">
+    <div class="wrap">
+      <div class="split">
+        <h2>Il pezzo è pronto. Le immagini <em>per venderlo</em> no.</h2>
+        <p>Per un'azienda metalmeccanica le foto di prodotto arrivano sempre per ultime. Noi le facciamo partire dal file che hai già.</p>
+      </div>
+      <div class="cols">
+        <div><h3>Il prodotto non c'è ancora</h3><p>Il catalogo o la fiera arrivano prima della produzione. Senza il pezzo fisico niente foto, e la scheda prodotto resta vuota.</p></div>
+        <div><h3>In azienda nessuno lo sa fare</h3><p>L'ufficio tecnico disegna, non fa grafica. E nessuno ha tempo di imparare software di rendering o di seguire un fotografo.</p></div>
+        <div><h3>Il fotografo costa e richiede tempo</h3><p>Set, luci, scontorno, ritocco, e ogni variante di finitura va rifatta da capo. Su un catalogo di decine di codici diventa un progetto a sé.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="come">
+    <div class="wrap">
+      <div class="split">
+        <h2>Persone all'inizio e alla fine, <em>automazione</em> nel mezzo.</h2>
+        <p>Le persone lavorano all'inizio e alla fine, l'automazione fa il volume. Così il prezzo per immagine resta basso anche su cataloghi grandi.</p>
+      </div>
+      <ol class="steps">
+        <li>
+          <h3>Avvio con una persona dedicata</h3>
+          <p>Ci mandi i file e un nostro operatore studia i tuoi prodotti: materiali, finiture, luci, inquadrature. Ne esce lo standard visivo del tuo catalogo.</p>
+          <span class="formats">STEP · IGES · STL · SolidWorks · JPG</span>
+        </li>
+        <li>
+          <h3>Controlli le prime 6 immagini</h3>
+          <p>Prima di partire con tutto il catalogo ti mostriamo le prime 5-6 immagini. Le correggiamo finché non sono come le vuoi.</p>
+        </li>
+        <li>
+          <h3>Produzione in serie</h3>
+          <p>Approvato lo standard, il sistema genera tutte le immagini del catalogo in automatico. Cento codici o duemila, i tempi restano brevi.</p>
+        </li>
+        <li>
+          <h3>Controllo finale e consegna</h3>
+          <p>Prima della consegna una persona rivede il lotto. Ricevi i file pronti per catalogo, sito, Amazon e marketplace B2B.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" id="cosa">
+    <div class="wrap">
+      <div class="split">
+        <h2>Immagini da usare <em>subito, ovunque.</em></h2>
+        <p>Un solo standard visivo per tutto il catalogo, dal sito alla brochure della fiera.</p>
+      </div>
+      <div class="deliver">
+        <div><span class="kicker">Packshot</span><h3>Fondo bianco, scontornato</h3><p>Lo standard per e-commerce e schede tecniche, coerente su tutto il catalogo.</p></div>
+        <div><span class="kicker">Ambientate</span><h3>Il pezzo nel suo contesto</h3><p>Su una macchina, in un impianto, in un'officina. Per sito, brochure e social.</p></div>
+        <div><span class="kicker">Varianti</span><h3>Finiture e colori</h3><p>Zincato, verniciato, inox satinato. Una volta impostato il pezzo, ogni variante costa poco.</p></div>
+        <div><span class="kicker">Viste</span><h3>Più angolazioni ed esplosi</h3><p>Frontale, iso, dettaglio, vista esplosa per mostrare i componenti di un assieme.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section offer" id="offerta">
+    <div class="wrap">
+      <div class="split">
+        <div style="display:grid;gap:14px">
+          <p class="kicker">Solo per i primi 10 clienti, entro il 31 dicembre 2026</p>
+          <h2>Early access: <em>un terzo in meno</em> su ogni immagine.</h2>
+        </div>
+        <p>Stiamo lanciando il servizio e vogliamo farlo con poche aziende del territorio. Chi parte adesso paga meno, con il prezzo bloccato per un anno, e ci aiuta a costruire il servizio sulle esigenze reali.</p>
+      </div>
+
+      <div class="offer-card">
+        <table>
+          <thead>
+            <tr><th>Voce</th><th>Listino</th><th>Early access</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="item"><strong>Attivazione</strong><span>Avvio con persona dedicata, standard visivo del catalogo, prime 6 immagini di prova con correzioni, controllo finale del lotto</span></td>
+              <td class="old">1.500 €</td>
+              <td class="new">1.200 €<em>−20%</em></td>
+            </tr>
+            <tr>
+              <td class="item"><strong>Immagini dalla 1ª alla 500ª</strong><span>Packshot su fondo bianco, formati per catalogo ed e-commerce</span></td>
+              <td class="old">6 € / imm.</td>
+              <td class="new">4 € / imm.<em>−33%</em></td>
+            </tr>
+            <tr>
+              <td class="item"><strong>Dalla 501ª alla 2.000ª</strong><span>Stesso standard, prezzo a scaglione</span></td>
+              <td class="old">4 € / imm.</td>
+              <td class="new">3 € / imm.</td>
+            </tr>
+            <tr>
+              <td class="item"><strong>Oltre la 2.000ª</strong><span>Per cataloghi completi e famiglie con molte varianti</span></td>
+              <td class="old">3 € / imm.</td>
+              <td class="new">2,50 € / imm.</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr><td colspan="3">Prezzi IVA esclusa · Prezzi per immagine early access bloccati per 12 mesi dalla firma · Esempio: 200 immagini = 2.000 € invece di 2.700 €</td></tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="conds">
+        <div><h3>10 posti</h3><p>Massimo 10 aziende. Il posto si assegna in ordine di firma dell'ordine di attivazione.</p></div>
+        <div><h3>Entro il 31 dicembre</h3><p>L'offerta vale per gli ordini firmati entro il 31 dicembre 2026, oppure fino a esaurimento dei 10 posti.</p></div>
+        <div><h3>Nessun canone</h3><p>Paghi l'attivazione una volta e poi solo le immagini che ordini, quando ti servono.</p></div>
+      </div>
+
+      <div class="cta-row"><a class="pill solid" href="#prenota">Blocca il tuo posto <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></a></div>
+    </div>
+  </section>
+
+  <section class="section" id="domande">
+    <div class="wrap">
+      <div class="split">
+        <h2>Prima che <em>ce lo chieda.</em></h2>
+        <p>Le domande che ci fanno più spesso le aziende con cui parliamo.</p>
+      </div>
+      <div class="faq">
+        <details>
+          <summary>I miei file CAD restano riservati?</summary>
+          <p>Sì. Firmiamo un accordo di riservatezza prima di ricevere qualsiasi file. I modelli servono solo a produrre le tue immagini e non vengono usati per altro.</p>
+        </details>
+        <details>
+          <summary>Non ho il CAD, solo il pezzo. Va bene lo stesso?</summary>
+          <p>Sì. Ti mandiamo una guida di una pagina per fare le foto col cellulare. Per pezzi con dettagli tecnici importanti (filettature, quote, marcature) ti diremo prima se dalle foto si ottiene un risultato all'altezza, e controlliamo ogni immagine sul pezzo vero.</p>
+        </details>
+        <details>
+          <summary>L'AI può cambiare la forma del pezzo?</summary>
+          <p>No. La geometria viene dal tuo file, l'AI la usiamo per sfondi e ambientazioni. Ogni immagine passa dalla tua approvazione prima della consegna.</p>
+        </details>
+        <details>
+          <summary>Di chi sono le immagini?</summary>
+          <p>Tue. Le puoi usare su catalogo, sito, marketplace, fiere e materiale commerciale senza limiti di tempo.</p>
+        </details>
+        <details>
+          <summary>Quanto devo seguire il lavoro?</summary>
+          <p>Poco. Una chiamata di avvio, l'invio dei file e il tuo ok sulle prime 5-6 immagini. Il resto, compreso il controllo finale, lo facciamo noi.</p>
+        </details>
+        <details>
+          <summary>Perché lo sconto?</summary>
+          <p>Perché il servizio è nuovo e vogliamo i primi casi concreti con aziende del territorio. In cambio ti chiediamo un parere sincero dopo la prima consegna e, se sei soddisfatto, il permesso di citarti come referenza.</p>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section class="section form-sec" id="prenota">
+    <div class="glow" aria-hidden="true"></div>
+    <div class="wrap form-grid">
+      <div class="form-intro">
+        <p class="kicker">Prenota il tuo posto</p>
+        <h2>Guardiamo insieme <em>un tuo pezzo.</em></h2>
+        <p>Lasciaci i tuoi dati. Fissiamo una chiamata di mezz'ora e, se ci mandi un file, ti mostriamo un'anteprima gratuita di un tuo prodotto.</p>
+        <div class="contacts">
+          <div><span class="k">Telefono</span><span class="v">[030 000 0000]</span></div>
+          <div><span class="k">Email</span><span class="v">[info@nomeagenzia.it]</span></div>
+        </div>
+      </div>
+
+      <form id="leadForm" novalidate>
+        <div class="field"><label for="f-nome">Nome e cognome</label><input id="f-nome" type="text" autocomplete="name" required></div>
+        <div class="field"><label for="f-azienda">Azienda</label><input id="f-azienda" type="text" autocomplete="organization" required></div>
+        <div class="field"><label for="f-email">Email</label><input id="f-email" type="email" autocomplete="email" required></div>
+        <div class="field"><label for="f-tel">Telefono</label><input id="f-tel" type="tel" autocomplete="tel"></div>
+        <div class="field full">
+          <label for="f-settore">Cosa producete</label>
+          <select id="f-settore">
+            <option>Macchine e impianti</option>
+            <option>Componenti meccanici a catalogo</option>
+            <option>Valvole, raccorderia, rubinetteria</option>
+            <option>Utensili e attrezzature</option>
+            <option>Altro</option>
+          </select>
+        </div>
+        <fieldset class="field full">
+          <legend>Cosa potete mandarci</legend>
+          <label class="check"><input id="f-cad" type="radio" name="fonte" value="cad" checked> File CAD</label>
+          <label class="check"><input id="f-foto" type="radio" name="fonte" value="foto"> Solo foto</label>
+          <label class="check"><input id="f-nonso" type="radio" name="fonte" value="nonso"> Non lo so ancora</label>
+        </fieldset>
+        <div class="field full"><label for="f-note">Quanti prodotti, per cosa vi servono le immagini</label><textarea id="f-note" placeholder="Es. 40 codici per il nuovo catalogo 2027 e lo shop online"></textarea></div>
+        <label class="check field full"><input id="f-privacy" type="checkbox" required> <span>Acconsento al trattamento dei miei dati per essere ricontattato su questa offerta, come descritto nell'informativa privacy.</span></label>
+        <div class="field full"><button class="pill solid" type="submit" style="justify-self:start">Prenota uno dei 10 posti <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button></div>
+        <p class="form-note" id="formNote" hidden></p>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>[Nome agenzia] · [Indirizzo], Brescia · P.IVA [00000000000]</span>
+    <span>Informativa privacy · Offerta valida fino al 31.12.2026 o fino a esaurimento posti</span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  // Aggiornare a mano man mano che si firmano le attivazioni.
+  var POSTI_TOTALI = 10;
+  var POSTI_LIBERI = 10;
+  var SCADENZA = new Date("2026-12-31T23:59:59+01:00");
+
+  var bar = document.getElementById("slotBar");
+  for (var i = 0; i < POSTI_TOTALI; i++) {
+    var s = document.createElement("i");
+    if (i >= POSTI_LIBERI) s.className = "taken";
+    bar.appendChild(s);
+  }
+  document.getElementById("slotNum").textContent = POSTI_LIBERI;
+  var days = Math.max(0, Math.ceil((SCADENZA - new Date()) / 86400000));
+  document.getElementById("daysLeft").textContent = days;
+  document.getElementById("daysLabel").textContent = days === 1 ? "giorno al 31 dicembre" : "giorni al 31 dicembre";
+
+  var range = document.getElementById("split");
+  var area = document.getElementById("viewArea"), photoLayer = document.getElementById("photoLayer");
+  var splitUI = document.getElementById("splitUI"), knob = document.getElementById("knob");
+  var splitV = 0.5;
+  function setSplit(v) {
+    splitV = Math.min(1, Math.max(0, v));
+    photoLayer.style.clipPath = "inset(0 0 0 " + (splitV * 100) + "%)";
+    splitUI.style.left = (splitV * 100) + "%";
+    knob.style.left = (splitV * 100) + "%";
+    range.value = Math.round(splitV * 100);
+  }
+  range.addEventListener("input", function () { setSplit(+range.value / 100); });
+  function fromPointer(ev) { var r = area.getBoundingClientRect(); setSplit((ev.clientX - r.left) / r.width); }
+  var dragging = false;
+  knob.addEventListener("pointerdown", function (ev) {
+    dragging = true; knob.classList.add("dragging");
+    try { knob.setPointerCapture(ev.pointerId); } catch (e) {}
+    ev.preventDefault();
+  });
+  knob.addEventListener("pointermove", function (ev) { if (dragging) fromPointer(ev); });
+  function endDrag() { dragging = false; knob.classList.remove("dragging"); }
+  knob.addEventListener("pointerup", endDrag);
+  knob.addEventListener("pointercancel", endDrag);
+  knob.addEventListener("keydown", function (ev) {
+    if (ev.key === "ArrowLeft") { setSplit(splitV - 0.05); ev.preventDefault(); }
+    if (ev.key === "ArrowRight") { setSplit(splitV + 0.05); ev.preventDefault(); }
+  });
+  setSplit(0.5);
+
+
+  var form = document.getElementById("leadForm"), note = document.getElementById("formNote");
+  form.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var missing = [];
+    if (!document.getElementById("f-nome").value.trim()) missing.push("nome");
+    if (!document.getElementById("f-azienda").value.trim()) missing.push("azienda");
+    var em = document.getElementById("f-email").value.trim();
+    if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(em)) missing.push("un'email valida");
+    if (!document.getElementById("f-privacy").checked) missing.push("il consenso privacy");
+    note.hidden = false;
+    note.textContent = missing.length
+      ? "Manca ancora: " + missing.join(", ") + "."
+      : "Questa è un'anteprima della pagina: la richiesta non è stata inviata. Alla messa online il modulo verrà collegato alla casella email o al gestionale dell'agenzia.";
+  });
+})();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,69 @@
+$fr: 80;
+
+/* Colori di progetto */
+$ink: #0B0B0F;
+$muted: #5E5D66;
+$line: #E6E4EA;
+$soft: #F6F4F8;
+$violet: #7A2BD6;
+$magenta: #E0347E;
+$orange: #FF8A3D;
+$amber: #FFC247;
+$white: #FFFFFF;
+$black: $ink;
+$bkg: $white;
+$text: $muted;
+$blue: $violet;
+$greyMiddle: #888888;
+$greyDark: #323232;
+$greyLight: $line;
+
+$defaultColor: $ink;
+
+$font-sans: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+$font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+$font-mono: 'JetBrains Mono', ui-monospace, Menlo, monospace;
+
+$dt:.5s;
+$de: cubic-bezier(0.000, 0.000, 0.580, 1.000);
+
+@function vh($unit){
+    @return calc(var(--vh, 1vh) * #{$unit});
+}
+@function vw($unit){
+    @return calc(var(--vw, 1vw) * #{$unit});
+}
+@function mw($unit){
+    @return calc(var(--vw, 1vw) * 100 / 80 * #{$unit});
+}
+@mixin media($w) {
+    @media screen and (max-width:#{$w}px) { @content; }
+}
+// X di chiusura delle modali, centrata sull'angolo in alto a destra del contenuto
+@mixin modalClose($offset: mw(4)) {
+    padding: 0;
+    position: absolute;
+    top: $offset;
+    right: $offset;
+    width: 30px;
+    height: 30px;
+    background: $black;
+    border-radius: 50%;
+    transform: translate(50%, -50%);
+    cursor: pointer;
+    &::before, &::after{
+        content: '';
+        position: absolute;
+        display: block;
+        top: 15px;
+        left: 15px;
+        background: $white;
+        width: 1px;
+        height: 20px;
+        transform: translate(-1px, -10px) rotate(45deg);
+    }
+    &::after{
+        transform: translate(-1px, -10px) rotate(-45deg);
+    }
+}
+$dbr: mw(.5);

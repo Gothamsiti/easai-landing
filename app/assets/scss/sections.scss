@@ -1,0 +1,585 @@
+// Classi di sezione, da usare nei campi `customClass` (BodyCols) e `class` (BodySimpleText, BodyCTA) in Storyblok.
+// I selettori ripetono .BodyCols/.BodySimpleText per battere la specificità degli stili base dei componenti.
+$bp: 900px;
+
+.BodyCols{
+	&.wrap{
+		width: 100%;
+		max-width: 114rem;
+		margin-inline: auto;
+		padding-inline: 2rem;
+		box-sizing: border-box;
+	}
+	&.sec{
+		flex-direction: column;
+		gap: 5.6rem;
+		padding-block: 9.6rem;
+		@media (max-width: 640px){
+			gap: 3.6rem;
+			padding-block: 6.4rem;
+		}
+	}
+	&.section{
+		flex-direction: column;
+	}
+	&.stack{
+		flex-direction: column;
+		gap: 1.8rem;
+	}
+	&.split{
+		display: grid;
+		grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+		gap: 4.8rem;
+		align-items: end;
+		.BodySimpleText p{
+			font-size: 1.95rem;
+			line-height: 1.5;
+			max-width: 24em;
+		}
+	}
+	&.grid-2, &.deliver{
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1.6rem;
+	}
+	&.grid-3, &.conds{
+		display: grid;
+		grid-template-columns: repeat(3, minmax(0, 1fr));
+		gap: 4rem;
+	}
+	&.conds{ gap: 3.2rem; }
+	&.steps{
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 3.2rem;
+		counter-reset: s;
+		> .BodySimpleText{
+			counter-increment: s;
+			&::before{
+				content: counter(s);
+				display: block;
+				padding-bottom: .6rem;
+				font-family: $font-serif;
+				font-style: italic;
+				font-size: 4.4rem;
+				line-height: 1;
+				background: linear-gradient(120deg, $violet, $magenta 55%, $orange);
+				-webkit-background-clip: text;
+				background-clip: text;
+				color: transparent;
+			}
+		}
+	}
+	&.deliver{
+		> .BodySimpleText{
+			padding: 2.6rem 2.8rem;
+			border-radius: 2rem;
+			background: $soft;
+			border: 0;
+		}
+	}
+	&.form-grid{
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+		gap: 5.6rem;
+		align-items: start;
+	}
+	&.fields-2{
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1.6rem;
+	}
+	&.cta-row{
+		flex-wrap: wrap;
+		gap: 1.2rem;
+		justify-content: center;
+	}
+	&.cta-row-left{
+		flex-wrap: wrap;
+		gap: 1.2rem;
+	}
+	@media (max-width: $bp){
+		&.split, &.grid-2, &.grid-3, &.conds, &.steps, &.deliver, &.form-grid{
+			grid-template-columns: minmax(0, 1fr);
+			gap: 2.8rem;
+		}
+		&.deliver{ gap: 1.6rem; }
+	}
+	@media (max-width: 640px){
+		&.fields-2{ grid-template-columns: minmax(0, 1fr); }
+	}
+
+	&.hero-copy{
+		flex-direction: column;
+		align-items: center;
+		text-align: center;
+		gap: 2rem;
+		padding-block: 5.6rem 2.4rem;
+		.lead{ max-width: 38em; }
+	}
+	&.stage{
+		flex-direction: column;
+		padding-block: 4rem 7.2rem;
+		position: relative;
+		overflow: hidden;
+		z-index: 0;
+	}
+	// alone sfumato dietro agli oggetti chiave
+	&.glowbg{
+		position: relative;
+		z-index: 0;
+	}
+	&.glowbg::before{
+		content: "";
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		width: min(140rem, 140vw);
+		height: 70%;
+		transform: translate(-50%, -50%);
+		pointer-events: none;
+		filter: blur(48px);
+		opacity: .85;
+		z-index: -1;
+		background:
+			radial-gradient(40% 55% at 22% 50%, rgba(255, 194, 71, .85), transparent 70%),
+			radial-gradient(38% 60% at 45% 55%, rgba(255, 138, 61, .75), transparent 70%),
+			radial-gradient(40% 55% at 62% 52%, rgba(224, 52, 126, .7), transparent 70%),
+			radial-gradient(35% 50% at 82% 48%, rgba(122, 43, 214, .55), transparent 70%);
+		@media (prefers-reduced-motion: no-preference){
+			animation: glow-drift 14s ease-in-out infinite alternate;
+		}
+	}
+	&.glowbg.soft::before{
+		top: 60%;
+		height: 60%;
+		opacity: .5;
+	}
+	&.fade-band{
+		position: relative;
+		&::after{
+			content: "";
+			position: absolute;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			height: 16rem;
+			pointer-events: none;
+			background: linear-gradient(90deg, rgba($violet,.18), rgba($magenta,.18), rgba($amber,.22));
+			-webkit-mask-image: linear-gradient(to bottom, transparent, #000);
+			mask-image: linear-gradient(to bottom, transparent, #000);
+		}
+	}
+	&.offer{
+		background: linear-gradient(105deg, #4C1786 0%, #A21F86 32%, #D42F78 58%, #E9562F 85%, #F07A2A 100%);
+		color: $white;
+		.BodySimpleText{
+			color: $white;
+		}
+		.BodySimpleText.kicker, .BodySimpleText.kicker p{
+			color: $white;
+		}
+	}
+	&.form-sec{
+		position: relative;
+		overflow: hidden;
+	}
+	&.footer-row{
+		justify-content: space-between;
+		gap: 1.6rem;
+		padding-block: 3.2rem;
+		border-top: 1px solid $line;
+		font-size: 1.4rem;
+		color: $muted;
+		@media (max-width: $bp){
+			flex-direction: column;
+		}
+	}
+}
+@keyframes glow-drift{
+	to{ transform: translate(-48%, -52%) scale(1.04); }
+}
+
+.BodySimpleText{
+	&.lead{
+		color: $muted;
+		font-size: 1.85rem;
+	}
+	&.muted, &.muted p{
+		color: $muted;
+	}
+	&.kicker, &.kicker p{
+		font-family: $font-serif;
+		font-style: italic;
+		font-size: 2.3rem;
+		line-height: 1.3;
+		color: $ink;
+	}
+	&.badge{
+		display: inline-flex;
+		align-items: center;
+		gap: .8rem;
+		padding: .6rem 1.4rem;
+		border-radius: 99rem;
+		background: $soft;
+		font-size: 1.3rem;
+		font-weight: 600;
+		&::before{
+			content: "";
+			width: .8rem;
+			height: .8rem;
+			border-radius: 50%;
+			background: linear-gradient(135deg, $orange, $magenta);
+		}
+	}
+	.formats{
+		display: block;
+		margin-top: 1rem;
+		font-family: $font-mono;
+		font-size: 1.25rem;
+		color: $ink;
+	}
+	&.item{
+		display: grid;
+		gap: 1rem;
+		align-content: start;
+		p{
+			color: $muted;
+			font-size: 1.6rem;
+		}
+	}
+	&.deliver-card .kicker{
+		font-family: $font-serif;
+		font-style: italic;
+		font-size: 2rem;
+		color: $violet;
+	}
+	&.contacts{
+		p{
+			margin: 0;
+			font-size: 1.75rem;
+			color: $ink;
+			& + p{ margin-top: 1.2rem; }
+		}
+		.small{
+			font-size: 1.25rem;
+			font-weight: 600;
+			letter-spacing: .08em;
+			text-transform: uppercase;
+			color: $muted;
+		}
+	}
+	&.cond{
+		display: grid;
+		gap: .6rem;
+		align-content: start;
+		p{
+			font-size: 1.6rem;
+			color: rgba($white, .88);
+		}
+	}
+	&.form-intro p{
+		color: $muted;
+		font-size: 1.75rem;
+	}
+}
+
+// tabella prezzi (HTML libero di BodySimpleHTML, che non ha una classe propria)
+.offer-card{
+	padding: 1.2rem 2.8rem .8rem;
+	border-radius: 2.8rem;
+	background: $white;
+	color: $ink;
+	box-shadow: 0 40px 90px -40px rgba(30, 0, 50, .6);
+	overflow-x: auto;
+	table{
+		width: 100%;
+		min-width: 52rem;
+		border-collapse: collapse;
+		font-variant-numeric: tabular-nums;
+	}
+	th, td{
+		text-align: left;
+		padding: 1.8rem 1.2rem;
+		border-bottom: 1px solid $line;
+		vertical-align: top;
+	}
+	thead th{
+		font-size: 1.25rem;
+		font-weight: 600;
+		letter-spacing: .08em;
+		text-transform: uppercase;
+		color: $muted;
+	}
+	td.item strong{
+		display: block;
+		font-size: 1.75rem;
+	}
+	td.item span{
+		color: $muted;
+		font-size: 1.5rem;
+	}
+	.old{
+		font-size: 1.5rem;
+		color: $muted;
+		text-decoration: line-through;
+		white-space: nowrap;
+	}
+	.new{
+		font-weight: 700;
+		font-size: 1.9rem;
+		white-space: nowrap;
+		em{
+			font-family: $font-sans;
+			font-style: normal;
+			font-size: 1.2rem;
+			font-weight: 600;
+			color: $white;
+			background: linear-gradient(120deg, $violet, $magenta);
+			padding: .2em .6em;
+			border-radius: 99rem;
+			margin-left: .5em;
+			vertical-align: 2px;
+		}
+	}
+	tfoot td{
+		border-bottom: 0;
+		font-size: 1.4rem;
+		color: $muted;
+		padding-block: 1.6rem 1.2rem;
+	}
+	@media (max-width: 640px){
+		padding: .4rem 1.6rem;
+		border-radius: 2.2rem;
+	}
+}
+
+// bordo animato "AI": un riflesso iridescente gira lungo il bordo, con ombra morbida sotto
+@property --cta-angle{
+	syntax: '<angle>';
+	initial-value: 0deg;
+	inherits: false;
+}
+@keyframes cta-border-spin{
+	to{ --cta-angle: 360deg; }
+}
+@property --cta-fill{
+	syntax: '<color>';
+	initial-value: #FFFFFF;
+	inherits: true;
+}
+@function ctaSweep($base){
+	@return conic-gradient(from var(--cta-angle),
+		#{$base} 0deg,
+		#{$base} 190deg,
+		color-mix(in srgb, #{$base} 25%, transparent) 225deg,
+		#d8d8e2 245deg,
+		$amber 256deg,
+		$white 263deg,
+		#3d7bff 271deg,
+		$magenta 279deg,
+		#14141c 292deg,
+		#{$base} 330deg,
+		#{$base} 360deg);
+}
+// il fondo (--cta-fill) è disegnato dal ::before insieme al bordo, così l'alone (::after) resta dietro e non sporca l'interno
+@mixin ctaGlow($width: 1.5px){
+	--cta-base: #3c3c4a;
+	--cta-fill: #{$white};
+	position: relative;
+	isolation: isolate;
+	background: transparent;
+	transition: --cta-fill $dt $de, color $dt $de, transform $dt $de;
+	box-shadow:
+		0 1px 2px rgba($ink, .06),
+		0 10px 24px -10px rgba($ink, .28),
+		0 24px 48px -24px rgba($ink, .22);
+	&::before, &::after{
+		content: '';
+		position: absolute;
+		border-radius: inherit;
+		pointer-events: none;
+		animation: cta-border-spin 4s linear infinite;
+	}
+	// fondo + anello del bordo
+	&::before{
+		z-index: -1;
+		inset: -1px; // copre il bordo trasparente da 1px della pillola
+		border: $width solid transparent;
+		background:
+			linear-gradient(var(--cta-fill), var(--cta-fill)) padding-box,
+			ctaSweep(var(--cta-base)) border-box;
+		box-shadow: inset 0 1px 0 rgba($white, .5);
+	}
+	// alone sfumato: solo il riflesso colorato, dietro al pulsante
+	&::after{
+		z-index: -2;
+		inset: -2px;
+		background: ctaSweep(transparent);
+		filter: blur(10px);
+		opacity: .6;
+	}
+	@media (prefers-reduced-motion: reduce){
+		&::before, &::after{ animation-duration: 16s; }
+	}
+}
+
+// pulsanti a pillola (campo `class` di BodyCTA, in alternativa al box nero di default)
+// la classe `noGlow` disattiva bordo animato e ombra
+.BodyCTA.pill{
+	display: inline-flex;
+	align-items: center;
+	gap: .6em;
+	padding: .85em 1.4em;
+	border: 1px solid $ink;
+	border-radius: 99rem;
+	background: transparent;
+	color: $ink;
+	font-size: 1.3rem;
+	font-weight: 600;
+	letter-spacing: .06em;
+	text-transform: uppercase;
+	cursor: pointer;
+	transition: background $dt $de, color $dt $de, border-color $dt $de, transform $dt $de, box-shadow $dt $de;
+	.icon{ display: flex; }
+	.iconify{ font-size: 1.4rem; }
+	&:not(.noGlow){
+		@include ctaGlow;
+		border-color: transparent;
+		// testo sfumato da scuro a grigio, come nel riferimento
+		&:not(.solid):not(.inverse) .label{
+			background: linear-gradient(90deg, $ink 35%, #9d9ca6);
+			-webkit-background-clip: text;
+			background-clip: text;
+			color: transparent;
+		}
+		&:hover{
+			color: $ink;
+			transform: translateY(-1px);
+			&::before, &::after{ animation-duration: 2s; }
+		}
+		&.solid{
+			--cta-fill: #{$ink};
+			background: transparent;
+			color: $white;
+			&:hover{ --cta-fill: #{$violet}; color: $white; border-color: transparent; }
+		}
+		&.inverse{
+			--cta-base: #{rgba($white, .55)};
+			--cta-fill: #{rgba($white, .06)};
+			background: transparent;
+			border-color: transparent;
+			color: $white;
+			&::after{ display: none; }
+			&:hover{ --cta-fill: #{$white}; color: $ink; }
+			&.solid{
+				--cta-fill: #{$white};
+				color: $ink;
+				&:hover{ --cta-fill: #{$ink}; color: $white; }
+			}
+		}
+	}
+	&.noGlow:hover{
+		background: $ink;
+		color: $white;
+	}
+	&.noGlow.solid{
+		background: $ink;
+		color: $white;
+		&:hover{
+			background: $violet;
+			border-color: $violet;
+		}
+	}
+	&.noGlow.inverse{
+		border-color: $white;
+		color: $white;
+		&:hover{
+			background: $white;
+			color: $ink;
+		}
+		&.solid{
+			background: $white;
+			color: $ink;
+			&:hover{
+				background: $ink;
+				color: $white;
+				border-color: $ink;
+			}
+		}
+	}
+}
+
+// modulo di contatto: campi su fondo soft, card con ombra
+.BodyForm.lead-form .Form{
+	padding: 3.2rem;
+	border-radius: 2.8rem;
+	background: $white;
+	box-shadow: 0 30px 80px -30px rgba(60, 10, 90, .35), 0 0 0 1px rgba(11, 11, 15, .05);
+	--form-line: transparent;
+	--form-muted: #{$muted};
+	form{
+		gap: 1.6rem;
+		input[type="text"], input[type="email"], input[type="tel"], select, textarea{
+			padding: .7em .9em;
+			border: 1px solid transparent;
+			border-radius: 1.2rem;
+			background: $soft;
+			font-size: 1.6rem;
+			font-weight: 400;
+			&:focus{
+				border-color: $violet;
+				background: $white;
+			}
+		}
+		textarea{ min-height: 9.6rem; }
+		.fieldFlexGroup{
+			gap: 1.6rem;
+			> *{ flex: 1 1 18rem; min-width: 0; }
+		}
+		.fieldRadioGroup{
+			display: flex;
+			flex-wrap: wrap;
+			gap: 1rem 2.4rem;
+			font-size: 1.5rem;
+		}
+		.submit.BodyCTA:not(.noStyles):not(.pill){
+			display: inline-flex;
+			flex-direction: row;
+			align-items: center;
+			min-height: 0;
+			gap: 1.2rem;
+			width: auto;
+			align-self: flex-start;
+			margin-top: 0;
+			padding: .85em 1.4em;
+			border: 1px solid transparent;
+			border-radius: 99rem;
+			background: $ink;
+			color: $white !important;
+			font-size: 1.3rem;
+			font-weight: 600;
+			letter-spacing: .06em;
+			&::after{ transform: none; }
+			&:hover{ background: $violet; }
+		}
+		.fieldText, .fieldEmail{
+			> label{
+				order: 0;
+				opacity: 1;
+			}
+		}
+		.fieldText, .fieldEmail, .fieldTextArea, .fieldSelect{
+			gap: .6rem;
+			> label{
+				font-size: 1.2rem;
+				font-weight: 600;
+				letter-spacing: .06em;
+				color: $muted !important;
+			}
+		}
+	}
+	@media (max-width: 640px){
+		padding: 2.2rem;
+	}
+}
