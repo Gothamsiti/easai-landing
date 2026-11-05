@@ -230,8 +230,11 @@ $bp: 900px;
 		border-radius: 99rem;
 		background: $soft;
 		font-size: 1.3rem;
-		font-weight: 600;
+		font-weight: 400;
 		line-height: 1.2;
+		strong, b{
+			font-weight: 700;
+		}
 		p{
 			margin: 0;
 			line-height: inherit;

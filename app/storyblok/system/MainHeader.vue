@@ -22,17 +22,18 @@ header#mainHeader{
     z-index: 10;
     .wrap{
         width: 100%;
-        max-width: 114rem;
-        margin-inline: auto;
         padding-inline: 2rem;
         box-sizing: border-box;
-        display: flex;
+        // 1fr | auto | 1fr: il menu resta al centro esatto a prescindere dalla larghezza di brand e actions
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
         align-items: center;
-        justify-content: space-between;
         gap: 1.6rem;
         padding-block: 2.2rem;
     }
     .brand{
+        justify-self: start;
+        font-family: 'Inter', sans-serif;
         font-weight: 700;
         font-size: 1.6rem;
         letter-spacing: -0.01em;
@@ -49,11 +50,15 @@ header#mainHeader{
         }
     }
     .actions{
+        justify-self: end;
         display: flex;
         align-items: center;
         gap: 1.6rem;
     }
     @media (max-width: 900px){
+        .wrap{
+            grid-template-columns: 1fr auto;
+        }
         .links{
             display: none;
         }
