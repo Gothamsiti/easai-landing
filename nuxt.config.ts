@@ -1,6 +1,11 @@
 import { homedir } from 'os'
 import { join } from 'path'
 import { readdirSync } from 'fs'
+console.log('[basicAuth]', {
+  ENVIROMENT: process.env.ENVIROMENT,
+  user: Boolean(process.env.BASIC_AUTH_USERNAME),
+  pass: Boolean(process.env.BASIC_AUTH_PASSWORD),
+})
 const isCloudflare = Boolean(process.env.CF_PAGES)
   || (process.env.NITRO_PRESET || '').includes('cloudflare')
 const iconsDir = './app/assets/icons'
