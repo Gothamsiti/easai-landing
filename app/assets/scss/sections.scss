@@ -199,6 +199,13 @@ $bp: 900px;
 @keyframes glow-drift{
 	to{ transform: translate(-48%, -52%) scale(1.04); }
 }
+@keyframes badge-in{
+	from{ opacity: 0; transform: translateY(1rem) scale(.96); }
+}
+@keyframes badge-pulse{
+	0%{ box-shadow: 0 0 0 0 rgba($magenta, .5); }
+	70%, 100%{ box-shadow: 0 0 0 .8rem rgba($magenta, 0); }
+}
 
 .BodySimpleText{
 	&.lead{
@@ -224,12 +231,24 @@ $bp: 900px;
 		background: $soft;
 		font-size: 1.3rem;
 		font-weight: 600;
+		line-height: 1.2;
+		p{
+			margin: 0;
+			line-height: inherit;
+		}
 		&::before{
 			content: "";
+			flex: none;
 			width: .8rem;
 			height: .8rem;
 			border-radius: 50%;
 			background: linear-gradient(135deg, $orange, $magenta);
+			@media (prefers-reduced-motion: no-preference){
+				animation: badge-pulse 2s ease-out infinite;
+			}
+		}
+		@media (prefers-reduced-motion: no-preference){
+			animation: badge-in .8s cubic-bezier(.2, .7, .2, 1) both;
 		}
 	}
 	.formats{
