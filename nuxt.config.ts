@@ -1,8 +1,6 @@
 import { homedir } from 'os'
 import { join } from 'path'
 import { readdirSync } from 'fs'
-
-const isDevelopment = process.env.NODE_ENV === 'development'
 const isCloudflare = Boolean(process.env.CF_PAGES)
   || (process.env.NITRO_PRESET || '').includes('cloudflare')
 const iconsDir = './app/assets/icons'
