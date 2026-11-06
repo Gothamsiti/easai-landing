@@ -214,6 +214,38 @@ fieldset legend { margin-bottom: 8px; padding: 0; width: 100%; }
 
 footer .wrap { border-top: 1px solid var(--line); padding-block: 28px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 12px; color: var(--muted); font-size: .85rem; }
 
+/* galleria verticale a scorrimento: 3 schede intere e la quarta che sbuca */
+.gallery-sec > .wrap { padding-block: 96px 0; }
+.gallery-sec { --g-gap: 20px; --g-content: min(1100px, calc(100vw - 2 * max(20px, env(safe-area-inset-left, 0px)))); padding-bottom: 96px; }
+.g-track {
+  display: flex; gap: var(--g-gap); overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory;
+  padding-block: 40px 8px;
+  padding-left: max(max(20px, env(safe-area-inset-left, 0px)), calc((100vw - 1100px) / 2));
+  padding-right: max(20px, env(safe-area-inset-right, 0px));
+  scroll-padding-left: max(max(20px, env(safe-area-inset-left, 0px)), calc((100vw - 1100px) / 2));
+  scrollbar-width: none; cursor: grab;
+}
+.g-track::-webkit-scrollbar { display: none; }
+.g-track.dragging { cursor: grabbing; scroll-snap-type: none; }
+.g-track.dragging img { pointer-events: none; }
+.g-card { flex: 0 0 calc((var(--g-content) - 3 * var(--g-gap)) / 3.35); margin: 0; scroll-snap-align: start; display: grid; gap: 14px; }
+.g-card img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 5; object-fit: cover; border-radius: 20px; background: #FFFFFF; box-shadow: 0 0 0 1px rgba(11, 11, 15, .06), 0 24px 50px -30px rgba(60, 10, 90, .35); user-select: none; -webkit-user-drag: none; }
+.g-card figcaption { display: grid; gap: 2px; padding-inline: 4px; }
+.g-card figcaption strong { font-size: 1rem; font-weight: 600; }
+.g-card figcaption span { font-size: .88rem; color: var(--muted); }
+.gallery-sec > .wrap.g-ctrl { display: flex; align-items: center; gap: 24px; padding-block: 28px 0; }
+.g-bar { flex: 1; height: 2px; background: var(--line); position: relative; border-radius: 2px; overflow: hidden; }
+.g-bar i { position: absolute; top: 0; bottom: 0; left: 0; width: 30%; background: linear-gradient(90deg, var(--violet), var(--magenta), var(--orange)); border-radius: 2px; }
+.g-btns { display: flex; gap: 8px; }
+.g-btn { padding: .8em; }
+.g-btn[disabled] { opacity: .3; cursor: default; }
+@media (max-width: 640px) {
+  .gallery-sec > .wrap { padding-block: 64px 0; }
+  .gallery-sec > .wrap.g-ctrl { padding-block: 20px 0; }
+  .gallery-sec { --g-gap: 14px; padding-bottom: 64px; }
+  .g-card { flex-basis: calc((var(--g-content) - var(--g-gap)) / 1.6); }
+}
+
 @media (max-width: 900px) {
   .nav-links { display: none; }
   .split, .form-grid { grid-template-columns: minmax(0, 1fr); gap: 24px; align-items: start; }
@@ -244,6 +276,7 @@ footer .wrap { border-top: 1px solid var(--line); padding-block: 28px; display: 
     <nav class="nav-links" aria-label="Sezioni">
       <a href="#come">Come funziona</a>
       <a href="#cosa">Cosa ricevi</a>
+      <a href="#esempi">Esempi</a>
       <a href="#offerta">Prezzi</a>
       <a href="#domande">Domande</a>
     </nav>
@@ -377,6 +410,34 @@ footer .wrap { border-top: 1px solid var(--line); padding-block: 28px; display: 
         <div><span class="kicker">Ambientate</span><h3>Il pezzo nel suo contesto</h3><p>Su una macchina, in un impianto, in un'officina. Per sito, brochure e social.</p></div>
         <div><span class="kicker">Varianti</span><h3>Finiture e colori</h3><p>Zincato, verniciato, inox satinato. Una volta impostato il pezzo, ogni variante costa poco.</p></div>
         <div><span class="kicker">Viste</span><h3>Più angolazioni ed esplosi</h3><p>Frontale, iso, dettaglio, vista esplosa per mostrare i componenti di un assieme.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section gallery-sec" id="esempi">
+    <div class="wrap">
+      <div class="split">
+        <h2>Still life <em>come in studio,</em> senza lo studio.</h2>
+        <p>Valvole, raccordi, viteria, collettori. Ogni immagine con luce, fondo e inquadratura coerenti in tutto il catalogo.</p>
+      </div>
+    </div>
+    <div class="g-track" id="gTrack" tabindex="0" aria-label="Esempi di immagini, scorri in orizzontale">
+          <figure class="g-card"><img src="gallery/01_valvola_sfera.jpg" alt="Valvola a sfera, still life su fondo bianco" width="780" height="1300" loading="lazy" decoding="async"><figcaption><strong>Valvola a sfera</strong><span>Ottone, leva in acciaio</span></figcaption></figure>
+          <figure class="g-card"><img src="gallery/02_regolatore_pressione.jpg" alt="Regolatore di pressione, still life su fondo bianco" width="780" height="1300" loading="lazy" decoding="async"><figcaption><strong>Regolatore di pressione</strong><span>Con manometro</span></figcaption></figure>
+          <figure class="g-card"><img src="gallery/03_valvola_saracinesca.jpg" alt="Valvola a saracinesca, still life su fondo bianco" width="780" height="1300" loading="lazy" decoding="async"><figcaption><strong>Valvola a saracinesca</strong><span>Ghisa, attacchi flangiati</span></figcaption></figure>
+          <figure class="g-card"><img src="gallery/04_valvola_farfalla.jpg" alt="Valvola a farfalla, still life su fondo bianco" width="780" height="1300" loading="lazy" decoding="async"><figcaption><strong>Valvola a farfalla</strong><span>Inox, tenuta in EPDM</span></figcaption></figure>
+          <figure class="g-card"><img src="gallery/05_raccordi_ottone_rame.jpg" alt="Raccordi, still life su fondo bianco" width="780" height="1300" loading="lazy" decoding="async"><figcaption><strong>Raccordi</strong><span>Ottone e rame</span></figcaption></figure>
+          <figure class="g-card"><img src="gallery/06_flangie_e_bulloni.jpg" alt="Flange e bulloneria, still life su fondo bianco" width="780" height="1300" loading="lazy" decoding="async"><figcaption><strong>Flange e bulloneria</strong><span>Kit di montaggio</span></figcaption></figure>
+          <figure class="g-card"><img src="gallery/07_viteria_bulloneria.jpg" alt="Viteria, still life su fondo bianco" width="780" height="1300" loading="lazy" decoding="async"><figcaption><strong>Viteria</strong><span>Inox A2</span></figcaption></figure>
+          <figure class="g-card"><img src="gallery/08_raccordi_rapidi.jpg" alt="Innesti rapidi, still life su fondo bianco" width="780" height="1300" loading="lazy" decoding="async"><figcaption><strong>Innesti rapidi</strong><span>Ottone e acciaio</span></figcaption></figure>
+          <figure class="g-card"><img src="gallery/09_rubinetto_industriale.jpg" alt="Rubinetto industriale, still life su fondo bianco" width="780" height="1300" loading="lazy" decoding="async"><figcaption><strong>Rubinetto industriale</strong><span>Attacco flangiato</span></figcaption></figure>
+          <figure class="g-card"><img src="gallery/10_manifold.jpg" alt="Collettore, still life su fondo bianco" width="780" height="1300" loading="lazy" decoding="async"><figcaption><strong>Collettore</strong><span>Ottone, 4 uscite</span></figcaption></figure>
+    </div>
+    <div class="wrap g-ctrl">
+      <div class="g-bar" aria-hidden="true"><i id="gThumb"></i></div>
+      <div class="g-btns">
+        <button class="pill g-btn" id="gPrev" type="button" aria-label="Immagini precedenti"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M14 8H3M7 4L3 8l4 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>
+        <button class="pill g-btn" id="gNext" type="button" aria-label="Immagini successive"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></button>
       </div>
     </div>
   </section>
@@ -566,6 +627,56 @@ footer .wrap { border-top: 1px solid var(--line); padding-block: 28px; display: 
   });
   setSplit(0.5);
 
+
+
+  // galleria: trascinamento col mouse, frecce e barra di avanzamento
+  (function () {
+    var track = document.getElementById("gTrack"), thumb = document.getElementById("gThumb");
+    var prev = document.getElementById("gPrev"), next = document.getElementById("gNext");
+    if (!track) return;
+    function update() {
+      var max = track.scrollWidth - track.clientWidth;
+      var vis = track.clientWidth / track.scrollWidth;
+      thumb.style.width = (vis * 100) + "%";
+      thumb.style.left = (max > 0 ? (track.scrollLeft / max) * (1 - vis) * 100 : 0) + "%";
+      prev.disabled = track.scrollLeft <= 2;
+      next.disabled = track.scrollLeft >= max - 2;
+    }
+    function step(dir) {
+      var card = track.querySelector(".g-card");
+      var w = card ? card.getBoundingClientRect().width + parseFloat(getComputedStyle(track).columnGap || 20) : 300;
+      track.scrollBy({ left: dir * w, behavior: "smooth" });
+    }
+    prev.addEventListener("click", function () { step(-1); });
+    next.addEventListener("click", function () { step(1); });
+    track.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    track.addEventListener("keydown", function (e) {
+      if (e.key === "ArrowRight") { step(1); e.preventDefault(); }
+      if (e.key === "ArrowLeft") { step(-1); e.preventDefault(); }
+    });
+    var down = false, startX = 0, startL = 0, moved = false;
+    track.addEventListener("pointerdown", function (e) {
+      if (e.pointerType !== "mouse") return;
+      down = true; moved = false; startX = e.clientX; startL = track.scrollLeft;
+    });
+    window.addEventListener("pointermove", function (e) {
+      if (!down) return;
+      var dx = e.clientX - startX;
+      if (!moved && Math.abs(dx) > 4) { moved = true; track.classList.add("dragging"); }
+      if (moved) track.scrollLeft = startL - dx;
+    });
+    window.addEventListener("pointerup", function () {
+      if (!down) return;
+      down = false;
+      if (moved) {
+        track.classList.remove("dragging");
+        var card = track.querySelector(".g-card"), w = card.getBoundingClientRect().width + 20;
+        track.scrollTo({ left: Math.round(track.scrollLeft / w) * w, behavior: "smooth" });
+      }
+    });
+    update();
+  })();
 
   var form = document.getElementById("leadForm"), note = document.getElementById("formNote");
   form.addEventListener("submit", function (ev) {
